@@ -116,8 +116,7 @@ export class DesignProcessor {
       
     } catch (error) {
       console.error('Processing error:', error)
-      await this.updateDesignStatus('error', error.message)
-    }
+      await this.updateDesignStatus("error", (error as Error).message)
   }
 
   private async processSegmentation() {
