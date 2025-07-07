@@ -1,6 +1,7 @@
+
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { CheckCircle, Clock, AlertCircle, Loader2 } from 'lucide-react'
 
@@ -80,30 +81,6 @@ export default function ProgressTracker({ designId, onComplete, onError }: Progr
   const [currentStep, setCurrentStep] = useState(0)
   const [isComplete, setIsComplete] = useState(false)
 
-  useEffect(() => {
-    // Subscribe to real-time updates for this design
-    const channel = supabase
-      .channel(`design_progress_${designId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'designs',
-          filter: `id=eq.${designId}`
-        },
-        (payload) => {
-          console.log('Design progress update:', payload)
-          handleProgressUpdate(payload.new as DesignData)
-        }
-      )
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
-  }, [designId, handleProgressUpdate])
-
   const handleProgressUpdate = useCallback((designData: DesignData) => {
     if (!designData) return
 
@@ -148,7 +125,31 @@ export default function ProgressTracker({ designId, onComplete, onError }: Progr
     if (status === 'error') {
       onError?.(error_message || 'An error occurred during processing')
     }
-  })
+  }, [onComplete, onError])
+
+  useEffect(() => {
+    // Subscribe to real-time updates for this design
+    const channel = supabase
+      .channel(`design_progress_${designId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'designs',
+          filter: `id=eq.${designId}`
+        },
+        (payload) => {
+          console.log('Design progress update:', payload)
+          handleProgressUpdate(payload.new as DesignData)
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [designId, handleProgressUpdate])
 
   const getStepIcon = (step: ProgressStep, index: number) => {
     switch (step.status) {
@@ -278,7 +279,6 @@ export default function ProgressTracker({ designId, onComplete, onError }: Progr
       </div>
     </div>
   )
-
-
 }
+
 
