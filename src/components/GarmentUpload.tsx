@@ -32,7 +32,7 @@ export default function GarmentUpload({
     if (file) {
       const preview = URL.createObjectURL(file)
       setStyleSwatchPreview(preview)
-      onFilesSelected({ garmentImage, styleSwatchImage: file })
+      onFilesSelected({ garmentImage: garmentImage || undefined, styleSwatchImage: file })
     }
   }, [onFilesSelected, garmentImage])
 
