@@ -135,9 +135,10 @@ export class DesignProcessor {
         ]
       }
 
-      await this.updateStepStatus('segmentation', 'completed', 100, null, result)
-    } catch (error) {
-      await this.updateStepStatus('segmentation', 'error', 0, error.message)
+      await this.updateStepStatus("segmentation", "completed", 100, undefined, result)
+    }
+    catch (error) {
+      await this.updateStepStatus("segmentation", "error", 0, (error as Error).message)
       throw error
     }
   }
