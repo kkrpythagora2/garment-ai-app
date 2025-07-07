@@ -1,8 +1,8 @@
-'use client'
 
 import { useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Upload, X, Image as ImageIcon } from 'lucide-react'
+import Image from 'next/image'
 
 interface GarmentUploadProps {
   onFilesSelected: (files: { garmentImage?: File; styleSwatchImage?: File }) => void
@@ -10,10 +10,10 @@ interface GarmentUploadProps {
   styleSwatchImage?: File | null
 }
 
-export default function GarmentUpload({ 
-  onFilesSelected, 
-  garmentImage, 
-  styleSwatchImage 
+export default function GarmentUpload({
+  onFilesSelected,
+  garmentImage,
+  styleSwatchImage
 }: GarmentUploadProps) {
   const [garmentPreview, setGarmentPreview] = useState<string | null>(null)
   const [styleSwatchPreview, setStyleSwatchPreview] = useState<string | null>(null)
@@ -90,10 +90,13 @@ export default function GarmentUpload({
           <input {...getGarmentInputProps()} />
           {garmentPreview ? (
             <div className="relative">
-              <img
+              <Image
                 src={garmentPreview}
                 alt="Garment preview"
                 className="max-h-48 mx-auto rounded-lg"
+                width={200} // Add appropriate width
+                height={200} // Add appropriate height
+                objectFit="contain"
               />
               <button
                 onClick={(e) => {
@@ -139,10 +142,13 @@ export default function GarmentUpload({
           <input {...getStyleSwatchInputProps()} />
           {styleSwatchPreview ? (
             <div className="relative">
-              <img
+              <Image
                 src={styleSwatchPreview}
                 alt="Style swatch preview"
                 className="max-h-32 mx-auto rounded-lg"
+                width={150} // Add appropriate width
+                height={150} // Add appropriate height
+                objectFit="contain"
               />
               <button
                 onClick={(e) => {

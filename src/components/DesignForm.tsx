@@ -12,7 +12,6 @@ interface DesignFormData {
 }
 
 export default function DesignForm() {
-  const { user } = useAuth()
   const [formData, setFormData] = useState<DesignFormData>({
     designPrompt: ''
   })

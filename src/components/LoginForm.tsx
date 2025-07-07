@@ -24,7 +24,7 @@ export default function LoginForm() {
       } else {
         await signIn(email, password)
       }
-    } catch (error: any) {
+    } catch (error: Error) {
       setError(error.message)
     } finally {
       setLoading(false)
