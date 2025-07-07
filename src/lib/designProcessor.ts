@@ -22,7 +22,7 @@ export class DesignProcessor {
     );
   }
 
-  public async processDesign(_designData: DesignData) {
+  public async processDesign() {
     try {
       await this.updateDesignStatus('processing');
 
