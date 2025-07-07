@@ -79,7 +79,6 @@ export default function ProgressTracker({ designId, onComplete, onError }: Progr
             }
           }
         })
-
         return newSteps
       })
     }
