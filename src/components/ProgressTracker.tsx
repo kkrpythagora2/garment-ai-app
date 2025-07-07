@@ -67,7 +67,8 @@ export default function ProgressTracker({ designId, onComplete, onError }: Progr
         
         // Update step statuses based on progress data
         progress_data.forEach((stepData: ProgressStep) => {
-          const stepIndex = newSteps.findIndex(step => step.id === stepData.id)          if (stepIndex !== -1) {
+          const stepIndex = newSteps.findIndex(step => step.id === stepData.id);
+          if (stepIndex !== -1) {
             newSteps[stepIndex] = {
               ...newSteps[stepIndex],
               status: stepData.status,
