@@ -118,6 +118,7 @@ export class DesignProcessor {
       console.error('Processing error:', error)
       await this.updateDesignStatus("error", (error as Error).message)
     }
+  }
 
   private async processSegmentation() {
     await this.updateStepStatus('segmentation', 'processing', 0)
