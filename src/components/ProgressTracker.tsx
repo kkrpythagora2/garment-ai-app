@@ -140,8 +140,10 @@ export default function ProgressTracker({ designId, onComplete, onError }: Progr
       onError?.(error_message || 'An error occurred during processing')
     }
 
-const getStepIcon = (step: ProgressStep, index: number) => {
-  switch (step.status) {
+    }
+  })
+
+  const getStepIcon = (step: ProgressStep, index: number) => {
       case 'completed':
         return <CheckCircle className="h-6 w-6 text-green-500" />
       case 'processing':
@@ -268,5 +270,8 @@ const getStepIcon = (step: ProgressStep, index: number) => {
       </div>
     </div>
   )
+}
+
+
 }
 
