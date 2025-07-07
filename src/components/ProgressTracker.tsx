@@ -142,6 +142,12 @@ export default function ProgressTracker({ designId, onComplete, onError }: Progr
   })
 
   const getStepIcon = (step: ProgressStep, index: number) => {
+    switch (step.status) {
+      case 'completed':
+        return <CheckCircle className="h-6 w-6 text-green-500" />
+      case 'processing':
+        return <Loader2 className="h-6 w-6 text-blue-500 animate-spin" />
+      case 'error':
         return <AlertCircle className="h-6 w-6 text-red-500" />
       default:
         return (
@@ -267,4 +273,8 @@ export default function ProgressTracker({ designId, onComplete, onError }: Progr
 
 
 }
+
+
+    }
+  }
 
