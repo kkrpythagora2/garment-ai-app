@@ -2,7 +2,9 @@
 
 import { useState } from 'react'
 import GarmentUpload from './GarmentUpload'
+import ProgressTracker from './ProgressTracker'
 import { Sparkles, ArrowRight } from 'lucide-react'
+import { createDesign } from '@/lib/designProcessor'
 
 interface DesignFormData {
   garmentImage?: File
@@ -15,6 +17,8 @@ export default function DesignForm() {
     designPrompt: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [currentDesignId, setCurrentDesignId] = useState<string | null>(null)
+  const [showProgress, setShowProgress] = useState(false)
 
   const handleFilesSelected = (files: { garmentImage?: File; styleSwatchImage?: File }) => {
     setFormData(prev => ({
@@ -41,15 +45,58 @@ export default function DesignForm() {
     setIsSubmitting(true)
     
     try {
-      // TODO: Implement design creation logic
-      console.log('Creating design with:', formData)
-      alert('Design creation will be implemented in the next phase!')
+      const designId = await createDesign({
+        garmentImage: formData.garmentImage,
+        styleSwatchImage: formData.styleSwatchImage,
+        designPrompt: formData.designPrompt
+      })
+      
+      setCurrentDesignId(designId)
+      setShowProgress(true)
     } catch (error) {
       console.error('Error creating design:', error)
       alert('Failed to create design. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const handleProgressComplete = (result: any) => {
+    console.log('Design completed:', result)
+    // Handle completion - could navigate to results page or show results
+  }
+
+  const handleProgressError = (error: string) => {
+    console.error('Design processing error:', error)
+    alert(`Design processing failed: ${error}`)
+    setShowProgress(false)
+    setCurrentDesignId(null)
+  }
+
+  const handleStartNewDesign = () => {
+    setShowProgress(false)
+    setCurrentDesignId(null)
+    setFormData({ designPrompt: '' })
+  }
+
+  if (showProgress && currentDesignId) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <ProgressTracker
+          designId={currentDesignId}
+          onComplete={handleProgressComplete}
+          onError={handleProgressError}
+        />
+        <div className="mt-6 text-center">
+          <button
+            onClick={handleStartNewDesign}
+            className="px-4 py-2 text-sm text-indigo-600 hover:text-indigo-500 font-medium"
+          >
+            Start New Design
+          </button>
+        </div>
+      </div>
+    )
   }
 
   const isFormValid = formData.garmentImage && formData.designPrompt.trim()
@@ -122,7 +169,8 @@ export default function DesignForm() {
             <li>1. Upload an image of the garment you want to modify</li>
             <li>2. Optionally add a style swatch for texture/pattern reference</li>
             <li>3. Describe your desired changes in the design prompt</li>
-            <li>4. Our AI will generate a preview of your modified design</li>
+            <li>4. Our AI will process your design through multiple stages</li>
+            <li>5. Track real-time progress and view results when complete</li>
           </ol>
         </div>
       </div>
