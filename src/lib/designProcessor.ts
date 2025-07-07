@@ -15,7 +15,7 @@ export interface ProcessingStep {
   error_message?: string
   started_at?: string
   completed_at?: string
-  result_data?: any
+  result_data?: unknown
 }
 
 export class DesignProcessor {
@@ -45,7 +45,7 @@ export class DesignProcessor {
       }
 
       // Create design record in database
-      const { data: design, error } = await supabase
+      const { error } = await supabase
         .from('designs')
         .insert({
           id: this.designId,
@@ -253,7 +253,7 @@ export class DesignProcessor {
     status: ProcessingStep['status'], 
     progress?: number, 
     errorMessage?: string,
-    resultData?: any
+    resultData?: unknown
   ) {
     const stepIndex = this.steps.findIndex(step => step.step_id === stepId)
     if (stepIndex === -1) return

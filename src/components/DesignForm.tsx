@@ -61,7 +61,7 @@ export default function DesignForm() {
     }
   }
 
-  const handleProgressComplete = (result: any) => {
+  const handleProgressComplete = (result: unknown) => {
     console.log('Design completed:', result)
     // Handle completion - could navigate to results page or show results
   }

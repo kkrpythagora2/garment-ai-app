@@ -15,9 +15,16 @@ interface ProgressStep {
   completed_at?: string
 }
 
+interface DesignData {
+  status: string;
+  current_step: number;
+  progress_data: ProcessingStep[];
+  error_message?: string;
+}
+
 interface ProgressTrackerProps {
   designId: string
-  onComplete?: (result: any) => void
+  onComplete?: (result: unknown) => void
   onError?: (error: string) => void
 }
 
@@ -78,7 +85,7 @@ export default function ProgressTracker({ designId, onComplete, onError }: Progr
         },
         (payload) => {
           console.log('Design progress update:', payload)
-          handleProgressUpdate(payload.new)
+          handleProgressUpdate(payload.new as DesignData)
         }
       )
       .subscribe()
@@ -86,9 +93,9 @@ export default function ProgressTracker({ designId, onComplete, onError }: Progr
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [designId])
+  }, [designId, handleProgressUpdate])
 
-  const handleProgressUpdate = (designData: any) => {
+  const handleProgressUpdate = useCallback((designData: DesignData) => {
     if (!designData) return
 
     const { status, current_step, progress_data, error_message } = designData
@@ -99,7 +106,7 @@ export default function ProgressTracker({ designId, onComplete, onError }: Progr
         const newSteps = [...prevSteps]
         
         // Update step statuses based on progress data
-        progress_data.forEach((stepData: any) => {
+        progress_data.forEach((stepData: ProcessingStep) => {
           const stepIndex = newSteps.findIndex(step => step.id === stepData.step_id)
           if (stepIndex !== -1) {
             newSteps[stepIndex] = {
