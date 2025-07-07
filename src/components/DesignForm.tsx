@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from './AuthProvider'
 import GarmentUpload from './GarmentUpload'
 import { Sparkles, ArrowRight } from 'lucide-react'
 
