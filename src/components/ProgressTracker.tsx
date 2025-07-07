@@ -4,33 +4,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { CheckCircle, Clock, AlertCircle, Loader2 } from 'lucide-react'
-
-interface ProgressStep {
-  id: string
-  title: string
-  description: string
-  status: 'pending' | 'processing' | 'completed' | 'error'
-  progress?: number
-  error_message?: string
-  started_at?: string
-  completed_at?: string
-}
-
-interface ProcessingStep {
-  step_id: string;
-  status: 'pending' | 'processing' | 'completed' | 'error';
-  progress?: number;
-  error_message?: string;
-  started_at?: string;
-  completed_at?: string;
-}
-
-interface DesignData {
-  status: string;
-  current_step: number;
-  progress_data: ProcessingStep[];
-  error_message?: string;
-}
+import { DesignData, ProgressStep } from '@/types'
 
 interface ProgressTrackerProps {
   designId: string
@@ -92,9 +66,8 @@ export default function ProgressTracker({ designId, onComplete, onError }: Progr
         const newSteps = [...prevSteps]
         
         // Update step statuses based on progress data
-        progress_data.forEach((stepData: ProcessingStep) => {
-          const stepIndex = newSteps.findIndex(step => step.id === stepData.step_id)
-          if (stepIndex !== -1) {
+        progress_data.forEach((stepData: ProgressStep) => {
+          const stepIndex = newSteps.findIndex(step => step.id === stepData.id)          if (stepIndex !== -1) {
             newSteps[stepIndex] = {
               ...newSteps[stepIndex],
               status: stepData.status,
