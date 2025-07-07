@@ -23,7 +23,7 @@ export default function GarmentUpload({
     if (file) {
       const preview = URL.createObjectURL(file)
       setGarmentPreview(preview)
-      onFilesSelected({ garmentImage: file, styleSwatchImage: styleSwatchImage || undefined })
+      onFilesSelected({ garmentImage: file, styleSwatchImage: styleSwatchImage ?? undefined })
     }
   }, [onFilesSelected, styleSwatchImage])
 
@@ -32,7 +32,7 @@ export default function GarmentUpload({
     if (file) {
       const preview = URL.createObjectURL(file)
       setStyleSwatchPreview(preview)
-      onFilesSelected({ garmentImage: garmentImage || undefined, styleSwatchImage: file })
+      onFilesSelected({ garmentImage: garmentImage ?? undefined, styleSwatchImage: file })
     }
   }, [onFilesSelected, garmentImage])
 
@@ -62,7 +62,7 @@ export default function GarmentUpload({
 
   const removeGarmentImage = () => {
     setGarmentPreview(null)
-    onFilesSelected({ styleSwatchImage })
+    onFilesSelected({ styleSwatchImage: styleSwatchImage ?? undefined })
   }
 
   const removeStyleSwatchImage = () => {
