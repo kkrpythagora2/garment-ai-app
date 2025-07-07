@@ -186,9 +186,10 @@ export class DesignProcessor {
         ]
       }
 
-      await this.updateStepStatus('pattern_drafting', 'completed', 100, null, result)
-    } catch (error) {
-      await this.updateStepStatus('pattern_drafting', 'error', 0, error.message)
+      await this.updateStepStatus("pattern_drafting", "completed", 100, undefined, result)
+    }
+    catch (error) {
+      await this.updateStepStatus("pattern_drafting", "error", 0, (error as Error).message)
       throw error
     }
   }
