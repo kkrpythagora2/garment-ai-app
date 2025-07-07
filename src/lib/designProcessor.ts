@@ -11,7 +11,7 @@ interface ProcessingStep {
 }
 
 export class DesignProcessor {
-  private supabase: any;
+  private supabase: ReturnType<typeof createClient>;
   private designId: string;
 
   constructor(designId: string) {
@@ -22,7 +22,7 @@ export class DesignProcessor {
     );
   }
 
-  public async processDesign(designData: DesignData) {
+  public async processDesign(_designData: DesignData) {
     try {
       await this.updateDesignStatus('processing');
 
@@ -84,7 +84,7 @@ export class DesignProcessor {
       return;
     }
 
-    let progressData: ProcessingStep[] = data?.progress_data || [];
+    const progressData: ProcessingStep[] = data?.progress_data || [];
     const existingStepIndex = progressData.findIndex(step => step.name === stepName);
 
     if (existingStepIndex !== -1) {
@@ -137,6 +137,61 @@ export class DesignProcessor {
       throw error;
     }
   }
+}
+
+export async function createDesign(designData: { garmentImage?: File; styleSwatchImage?: File; designPrompt: string }) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { data, error } = await supabase
+    .from('designs')
+    .insert([
+      {
+        status: 'pending',
+        design_prompt: designData.designPrompt,
+        progress_data: [],
+      },
+    ])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error inserting design:', error);
+    throw new Error('Failed to create design entry');
+  }
+
+  const designId = data.id;
+  const designProcessor = new DesignProcessor(designId);
+
+  // Handle file uploads
+  if (designData.garmentImage) {
+    const { error: uploadError } = await supabase.storage
+      .from('garments')
+      .upload(`${designId}/garment.png`, designData.garmentImage, { cacheControl: '3600', upsert: true });
+    if (uploadError) {
+      console.error('Error uploading garment image:', uploadError);
+      await designProcessor.updateDesignStatus('error', 'Failed to upload garment image');
+      throw new Error('Failed to upload garment image');
+    }
+  }
+
+  if (designData.styleSwatchImage) {
+    const { error: uploadError } = await supabase.storage
+      .from('garments')
+      .upload(`${designId}/style_swatch.png`, designData.styleSwatchImage, { cacheControl: '3600', upsert: true });
+    if (uploadError) {
+      console.error('Error uploading style swatch image:', uploadError);
+      await designProcessor.updateDesignStatus('error', 'Failed to upload style swatch image');
+      throw new Error('Failed to upload style swatch image');
+    }
+  }
+
+  // Start processing the design asynchronously
+  designProcessor.processDesign(data as DesignData).catch(console.error);
+
+  return designId;
 }
 
 
