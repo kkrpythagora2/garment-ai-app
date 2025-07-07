@@ -15,6 +15,15 @@ interface ProgressStep {
   completed_at?: string
 }
 
+interface ProcessingStep {
+  step_id: string;
+  status: 'pending' | 'processing' | 'completed' | 'error';
+  progress?: number;
+  error_message?: string;
+  started_at?: string;
+  completed_at?: string;
+}
+
 interface DesignData {
   status: string;
   current_step: number;
