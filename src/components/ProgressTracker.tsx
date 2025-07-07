@@ -4,7 +4,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { CheckCircle, Clock, AlertCircle, Loader2 } from 'lucide-react'
-import { DesignData, ProgressStep } from '@/types'
+import { DesignData, ProgressStep } from "../types"
 
 interface ProgressTrackerProps {
   designId: string

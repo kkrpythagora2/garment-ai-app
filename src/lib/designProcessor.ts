@@ -1,6 +1,6 @@
 
 import { createClient } from '@supabase/supabase-js'
-import { DesignData, ProgressStep } from '@/types'
+import { DesignData, ProgressStep } from '../types'
 
 interface ProcessingStep {
   name: string;
