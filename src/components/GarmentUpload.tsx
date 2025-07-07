@@ -67,7 +67,7 @@ export default function GarmentUpload({
 
   const removeStyleSwatchImage = () => {
     setStyleSwatchPreview(null)
-    onFilesSelected({ garmentImage })
+    onFilesSelected({ garmentImage: garmentImage ?? undefined })
   }
 
   return (
