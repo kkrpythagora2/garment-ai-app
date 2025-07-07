@@ -39,7 +39,7 @@ export class DesignProcessor {
       // Upload images to Supabase Storage
       const garmentImageUrl = await this.uploadImage(request.garmentImage, 'garment')
       let styleSwatchImageUrl = null
-      
+
       if (request.styleSwatchImage) {
         styleSwatchImageUrl = await this.uploadImage(request.styleSwatchImage, 'style_swatch')
       }
@@ -98,22 +98,22 @@ export class DesignProcessor {
     try {
       // Step 1: Garment Segmentation
       await this.processSegmentation()
-      
+
       // Step 2: Concept Generation
       await this.processConceptGeneration()
-      
+
       // Step 3: Pattern Drafting
       await this.processPatternDrafting()
-      
+
       // Step 4: 3D Fit Simulation
       await this.processFitSimulation()
-      
+
       // Step 5: Tech Pack Generation
       await this.processTechPackGeneration()
 
       // Mark design as completed
       await this.updateDesignStatus('completed')
-      
+
     } catch (error) {
       console.error('Processing error:', error)
       await this.updateDesignStatus("error", (error as Error).message)
@@ -122,11 +122,11 @@ export class DesignProcessor {
 
   private async processSegmentation() {
     await this.updateStepStatus('segmentation', 'processing', 0)
-    
+
     try {
       // Simulate API call to Grounding DINO + SAM
       await this.simulateAPICall('segmentation', 3000)
-      
+
       // Mock result
       const result = {
         mask_url: `https://example.com/masks/${this.designId}_mask.png`,
@@ -145,11 +145,11 @@ export class DesignProcessor {
 
   private async processConceptGeneration() {
     await this.updateStepStatus('concept_generation', 'processing', 0)
-    
+
     try {
       // Simulate API call to SDXL
       await this.simulateAPICall('concept_generation', 5000)
-      
+
       // Mock result
       const result = {
         concept_images: [
@@ -159,6 +159,9 @@ export class DesignProcessor {
         ]
       }
 
+      await this.updateStepStatus('concept_generation', 'completed', 100, null, result)
+    } catch (error) {
+      await this.updateStepStatus('concept_generation', 'error', 0, error.message)
       await this.updateStepStatus("concept_generation", "completed", 100, undefined, result)
     }
     catch (error) {
@@ -169,11 +172,11 @@ export class DesignProcessor {
 
   private async processPatternDrafting() {
     await this.updateStepStatus('pattern_drafting', 'processing', 0)
-    
+
     try {
       // Simulate API call to SewFormer
       await this.simulateAPICall('pattern_drafting', 4000)
-      
+
       // Mock result
       const result = {
         pattern_pieces: [
@@ -183,20 +186,20 @@ export class DesignProcessor {
         ]
       }
 
-      await this.updateStepStatus('pattern_drafting', 'completed', 100, undefined, result)
+      await this.updateStepStatus('pattern_drafting', 'completed', 100, null, result)
     } catch (error) {
-      await this.updateStepStatus('pattern_drafting', 'error', 0, (error as Error).message)
+      await this.updateStepStatus('pattern_drafting', 'error', 0, error.message)
       throw error
     }
   }
 
   private async processFitSimulation() {
     await this.updateStepStatus('fit_simulation', 'processing', 0)
-    
+
     try {
       // Simulate API call to CLO 3D
       await this.simulateAPICall('fit_simulation', 6000)
-      
+
       // Mock result
       const result = {
         simulation_video: `https://example.com/simulations/${this.designId}_simulation.mp4`,
@@ -207,20 +210,20 @@ export class DesignProcessor {
         }
       }
 
-      await this.updateStepStatus('fit_simulation', 'completed', 100, undefined, result)
+      await this.updateStepStatus('fit_simulation', 'completed', 100, null, result)
     } catch (error) {
-      await this.updateStepStatus('fit_simulation', 'error', 0, (error as Error).message)
+      await this.updateStepStatus('fit_simulation', 'error', 0, error.message)
       throw error
     }
   }
 
   private async processTechPackGeneration() {
     await this.updateStepStatus('tech_pack', 'processing', 0)
-    
+
     try {
       // Simulate tech pack generation
       await this.simulateAPICall('tech_pack', 2000)
-      
+
       // Mock result
       const result = {
         tech_pack_pdf: `https://example.com/techpacks/${this.designId}_techpack.pdf`,
@@ -232,9 +235,9 @@ export class DesignProcessor {
         total_cost: '$30.00'
       }
 
-      await this.updateStepStatus('tech_pack', 'completed', 100, undefined, result)
+      await this.updateStepStatus('tech_pack', 'completed', 100, null, result)
     } catch (error) {
-      await this.updateStepStatus('tech_pack', 'error', 0, (error as Error).message)
+      await this.updateStepStatus('tech_pack', 'error', 0, error.message)
       throw error
     }
   }
@@ -242,7 +245,7 @@ export class DesignProcessor {
   private async simulateAPICall(stepId: string, duration: number) {
     const steps = 10
     const stepDuration = duration / steps
-    
+
     for (let i = 1; i <= steps; i++) {
       await new Promise(resolve => setTimeout(resolve, stepDuration))
       const progress = (i / steps) * 100
@@ -261,7 +264,7 @@ export class DesignProcessor {
     if (stepIndex === -1) return
 
     const now = new Date().toISOString()
-    
+
     this.steps[stepIndex] = {
       ...this.steps[stepIndex],
       status,
