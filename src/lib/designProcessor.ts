@@ -183,9 +183,9 @@ export class DesignProcessor {
         ]
       }
 
-      await this.updateStepStatus('pattern_drafting', 'completed', 100, null, result)
+      await this.updateStepStatus('pattern_drafting', 'completed', 100, undefined, result)
     } catch (error) {
-      await this.updateStepStatus('pattern_drafting', 'error', 0, error.message)
+      await this.updateStepStatus('pattern_drafting', 'error', 0, (error as Error).message)
       throw error
     }
   }
@@ -207,9 +207,9 @@ export class DesignProcessor {
         }
       }
 
-      await this.updateStepStatus('fit_simulation', 'completed', 100, null, result)
+      await this.updateStepStatus('fit_simulation', 'completed', 100, undefined, result)
     } catch (error) {
-      await this.updateStepStatus('fit_simulation', 'error', 0, error.message)
+      await this.updateStepStatus('fit_simulation', 'error', 0, (error as Error).message)
       throw error
     }
   }
@@ -232,9 +232,9 @@ export class DesignProcessor {
         total_cost: '$30.00'
       }
 
-      await this.updateStepStatus('tech_pack', 'completed', 100, null, result)
+      await this.updateStepStatus('tech_pack', 'completed', 100, undefined, result)
     } catch (error) {
-      await this.updateStepStatus('tech_pack', 'error', 0, error.message)
+      await this.updateStepStatus('tech_pack', 'error', 0, (error as Error).message)
       throw error
     }
   }
@@ -309,4 +309,3 @@ export async function createDesign(request: DesignRequest): Promise<string> {
   const processor = new DesignProcessor(designId)
   return await processor.createDesign(request)
 }
-
